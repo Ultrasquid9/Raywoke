@@ -8,7 +8,7 @@ license = "MIT"
 readme = "README.md"
 repository = "https://github.com/Ultrasquid9/Raywoke"
 maintenance = { status = "actively-developed" }
-categories = [ "Gamedev", "Collision", ]
+categories = [ "Game development", "Mathematics", ]
 keywords = ["gamedev", "raycast", "collision", "2d", "lightweight"]
 
 [dependencies]
