@@ -9,6 +9,7 @@ pub fn distance(p1: P, p2: P) -> f32 {
 	return ((p2.x() - p1.x()).powi(2) + (p2.y() - p1.y()).powi(2)).sqrt();
 }
 
+/// Calculates the square root. This algorithm is based upon [this blogpost](https://suraj.sh/fast-square-root-approximation).
 #[cfg(feature = "no_std")]
 fn sqrt(input: f32) -> f32 {
 	let mut i = u32::from_le_bytes(input.to_le_bytes());
