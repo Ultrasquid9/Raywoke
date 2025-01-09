@@ -6,7 +6,7 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/heyimrein/raylite"
+repository = "https://github.com/Ultrasquid9/Raywoke"
 maintenance = { status = "actively-developed" }
 categories = [ "Gamedev", "Collision", ]
 keywords = ["gamedev", "raycast", "raycasting", "collision", "2d", "lightweight"]
