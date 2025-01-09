@@ -2,7 +2,7 @@
 name = "raywoke"
 description = "Extremely simple raycasting crate"
 authors = ["heyimrein", "juni"]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
@@ -16,9 +16,11 @@ dyn-clone = "1"
 
 glam = { version = "0.29", optional = true }
 nalgebra = { version = "0.33", optional = true }
+yakui = { version = "0.3", optional = true }
 
 [features]
 default = []
 
 glam = ["dep:glam"]
 nalgebra = ["dep:nalgebra"]
+yakui = ["dep:yakui"]

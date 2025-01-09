@@ -7,13 +7,18 @@ In order to achieve this, Raywoke makes two compromises:
 - It is no longer `no_std`
 - It now requires `dyn-clone`, meaning it is no longer dependency-free. 
 
-## Glam and Nalgebra interop
+## Third-party crate interop
 
-Raywoke provides interop with both Glam and Nalgebra. To enable this, enable their restpective features in your `cargo.toml`:
+Raywoke provides interop with the following external crates:
+- `glam`
+- `nalgebra`
+- `yakui`
+
+To enable this, enable their respective features in your `cargo.toml`:
 
 ```toml
 [dependencies]
-raywoke = { version = "0.", features = ["glam","nalgebra"] }
+raywoke = { version = "0.1", features = ["glam","nalgebra","yakui"] }
 ```
 
 ## Examples
@@ -42,7 +47,7 @@ fn main() {
 }
 ```
 
-**Glam and Nalgebra interop**
+**Third-party crate interop**
 ```rust
 use glam::Vec2;
 use nalgebra::Vector2;

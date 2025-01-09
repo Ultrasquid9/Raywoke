@@ -3,6 +3,7 @@ use dyn_clone::DynClone;
 pub mod glam;
 pub mod nalgebra;
 pub mod tuple;
+pub mod yakui;
 
 /// A point that can be used for Raycasting.
 /** # Examples
@@ -27,7 +28,7 @@ impl Point for Vec2 {
 }
 ```
  */
-pub trait Point: DynClone + core::fmt::Debug {
+pub trait Point: DynClone + core::fmt::Debug + Send + Sync {
 	fn x(&self) -> f32;
 	fn y(&self) -> f32;
 
