@@ -1,0 +1,24 @@
+[package]
+name = "raywoke"
+description = "Extremely simple raycasting crate"
+authors = ["heyimrein", "juni"]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/heyimrein/raylite"
+maintenance = { status = "actively-developed" }
+categories = [ "Gamedev", "Collision", ]
+keywords = ["gamedev", "raycast", "raycasting", "collision", "2d", "lightweight"]
+
+[dependencies]
+dyn-clone = "1"
+
+glam = { version = "0.29", optional = true }
+nalgebra = { version = "0.33", optional = true }
+
+[features]
+default = []
+
+glam = ["dep:glam"]
+nalgebra = ["dep:nalgebra"]
