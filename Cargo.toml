@@ -12,14 +12,17 @@ categories = [ "game-development", "mathematics", ]
 keywords = ["gamedev", "raycast", "collision", "2d", "lightweight"]
 
 [dependencies]
+# Required for the Point trait
 dyn-clone = "1"
 
+# Various optional math libraries
 glam = { version = "0.29", optional = true }
 nalgebra = { version = "0.33", optional = true }
 yakui = { version = "0.3", optional = true }
 
 [features]
 default = []
+no_std = []
 
 glam = ["dep:glam"]
 nalgebra = ["dep:nalgebra"]

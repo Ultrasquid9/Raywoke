@@ -3,8 +3,8 @@
 Raywoke is an extremely simple raycasting crate, forked from [raylite](https://github.com/heyimrein/raylite). It was created primarily to make the API simpler to use, and integrate more closely with third-party math libraries.
 
 In order to achieve this, Raywoke makes two compromises:
-- It is no longer `no_std`
-- It now requires `dyn-clone`, meaning it is no longer dependency-free. 
+- It now requires `dyn-clone`, meaning it is no longer dependency-free.
+- It now stores data on the heap. 
 
 ## Third-party crate interop
 
@@ -27,22 +27,29 @@ raywoke = { version = "0.1", features = ["glam","nalgebra","yakui"] }
 use raywoke::prelude::*;
 
 fn main() {
-    // Positions are differentiated here because emission direction matters
-    let ray = Ray {
-        start: (0., 0.), // Emission origin position
-        end: (2., 0.),   // Emission end position
-    };
-	// Direction does not matter for Barriers
-    let mut bar = Barrier ((1., -1.), (1., 1.)); 
+	// Tuples are being used here for demonstration purposes, but any type which implements the Point trait will work
+	let ray = Ray::new(
+		(0., 0.),
+		(2., 0.),
+	);
 
-    let result = cast(&ray, &bar); // Returns a Result<RayHit, RayFail>
+	let mut bar = Barrier::new(
+		(1., -1.), 
+		(1., 1.)
+	); 
 
-    assert!(result.is_ok()); // Result is an Ok<RayHit> containing hit info
+	let result = cast(&ray, &bar); // Returns a Result<RayHit, RayFail>
 
-    bar = Barrier ((-1., -1.), (-1., 1.)); // Place barrier behind the Ray
+	assert!(result.is_ok()); // Result is an Ok<RayHit> containing hit info
 
-    let result = cast(&ray, &bar);
-    assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
+	// Place barrier behind the Ray	
+	bar = Barrier::new(
+		(-1., -1.), 
+		(-1., 1.)
+	); 
+
+	let result = cast(&ray, &bar);
+	assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
 }
 ```
 
