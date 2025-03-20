@@ -1,11 +1,12 @@
 pub mod glam;
 pub mod nalgebra;
 pub mod tuple;
-pub mod yakui;
 
 /// A point that can be used for Raycasting.
 /** # Examples
 ```
+use raywoke::prelude::*;
+
 #[derive(Debug, Clone)]
 struct Vec2 {
 	x: f64,

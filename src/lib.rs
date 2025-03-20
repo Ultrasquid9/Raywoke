@@ -8,13 +8,12 @@ Raywoke is an extremely simple raycasting crate, forked from [raylite](https://g
 Raywoke provides interop with the following external crates:
 - `glam`
 - `nalgebra`
-- `yakui`
 
 To enable this, enable their respective features in your `cargo.toml`:
 
 ```toml
 [dependencies]
-raywoke = { version = "0.1", features = ["glam","nalgebra","yakui"] }
+raywoke = { version = "0.1", features = ["glam","nalgebra"] }
 ```
 
 ## Examples
