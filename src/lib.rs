@@ -3,10 +3,6 @@
 
 Raywoke is an extremely simple raycasting crate, forked from [raylite](https://github.com/heyimrein/raylite). It was created primarily to make the API simpler to use, and integrate more closely with third-party math libraries.
 
-In order to achieve this, Raywoke makes two compromises:
-- It now requires `dyn-clone`, meaning it is no longer dependency-free.
-- It now stores data on the heap. 
-
 ## Third-party crate interop
 
 Raywoke provides interop with the following external crates:
@@ -56,14 +52,14 @@ fn main() {
 
 **Third-party crate interop**
 ```rust
-use glam::Vec2;
+use glam::DVec2;
 use nalgebra::Vector2;
 use raywoke::prelude::*;
 
 fn main() {
 	// With the "glam" and "nalgebra" features, you can use their respective Vector structs
 	let ray = Ray::new(
-		Vec2::new(0., 0.),
+		DVec2::new(0., 0.),
 		Vector2::new(0., 0.),
 	);
 }
@@ -76,18 +72,18 @@ use raywoke::prelude::*;
 // Clone and Debug are both required
 #[derive(Debug, Clone)]
 struct Vec2 {
-	x: f32,
-	y: f32
+	x: f64,
+	y: f64
 }
 
 impl Point for Vec2 {
-	fn x(&self) -> f32 {
+	fn x(&self) -> f64 {
 		self.x
 	}
-	fn y(&self) -> f32 {
+	fn y(&self) -> f64 {
 		self.y
 	}
-	fn edit(&mut self, x: f32, y: f32) {
+	fn edit(&mut self, x: f64, y: f64) {
 		self.x = x;
 		self.y = y;
 	}
@@ -116,8 +112,6 @@ pub mod point;
 pub mod prelude;
 mod utils;
 
-pub(crate) type P = Box<dyn Point>;
-
 /// Cast a ray for collision detection, with only the consideration of a single [Barrier].
 pub fn cast(ray: &Ray, bar: &Barrier) -> Result<RayHit, RayFail> {
 	let den = (ray.start.x() - ray.end.x()) * (bar.0.y() - bar.1.y())
@@ -135,19 +129,19 @@ pub fn cast(ray: &Ray, bar: &Barrier) -> Result<RayHit, RayFail> {
 	let u = u_num / den;
 
 	if (t >= 0. && t <= 1.) && (u >= 0. && u <= 1.) {
-		let mut point = ray.start.clone();
+		let mut point = ray.start;
 		point.edit(
-			ray.start.x() + t * (ray.end.x() - ray.start.x()), 
-			ray.start.y() + t * (ray.end.y() - ray.start.y())
+			ray.start.x() + t * (ray.end.x() - ray.start.x()),
+			ray.start.y() + t * (ray.end.y() - ray.start.y()),
 		);
 
 		return Ok(RayHit {
 			position: point.clone(),
-			distance: distance(ray.start.clone(), point.clone()),
+			distance: distance(ray.start, point),
 		});
 	}
 	return Err(RayFail::NoHit);
-	}
+}
 
 /// Cast a Ray for collision detection, with the consideration of several [Barrier]'s.
 ///
@@ -195,9 +189,9 @@ pub enum RayFail {
 /// Raycast collision data.
 pub struct RayHit {
 	/// Position of collision point.
-	pub position: P,
+	pub position: (f64, f64),
 	/// Distance of collision point from Ray emission origin.
-	pub distance: f32,
+	pub distance: f64,
 }
 
 /// Raycast collision unit, the basis for all raycast collision detection.
@@ -205,30 +199,27 @@ pub struct RayHit {
 #[derive(Debug, Clone)]
 pub struct Ray {
 	/// Origin position the Ray will emit from.
-	pub start: P,
+	pub start: (f64, f64),
 	/// Position representing the end of the Ray.
-	pub end: P,
+	pub end: (f64, f64),
 }
 
 /// 1-dimensional collision subject; Solid line.
 /// Simplest building block for collider objects.
 #[derive(Debug, Clone)]
-pub struct Barrier (pub P, pub P);
+pub struct Barrier(pub (f64, f64), pub (f64, f64));
 
 impl Ray {
-	pub fn new(start: impl Point + 'static, end: impl Point + 'static) -> Self {
+	pub fn new(start: impl Point, end: impl Point) -> Self {
 		Self {
-			start: Box::new(start),
-			end: Box::new(end)
+			start: start.tup_f64(),
+			end: end.tup_f64(),
 		}
 	}
 }
 
 impl Barrier {
-	pub fn new(start: impl Point + 'static, end: impl Point + 'static) -> Self {
-		Self (
-			Box::new(start),
-			Box::new(end)
-		)
+	pub fn new(start: impl Point, end: impl Point) -> Self {
+		Self(start.tup_f64(), end.tup_f64())
 	}
 }

@@ -1,7 +1,7 @@
-use crate::P;
+use crate::point::Point;
 
 /// Calculate the distance between two 2D points.
-pub fn distance(p1: P, p2: P) -> f32 {
+pub fn distance(p1: impl Point, p2: impl Point) -> f64 {
 	#[cfg(feature = "no_std")]
 	return sqrt(pow2(p2.x() - p1.x()) + pow2(p2.y() - p1.y()));
 
@@ -11,7 +11,8 @@ pub fn distance(p1: P, p2: P) -> f32 {
 
 /// Calculates the square root. This algorithm is based upon [this blogpost](https://suraj.sh/fast-square-root-approximation).
 #[cfg(feature = "no_std")]
-fn sqrt(input: f32) -> f32 {
+fn sqrt(input: f64) -> f64 {
+	let input = input as f32;
 	let mut i = u32::from_le_bytes(input.to_le_bytes());
 
 	i = 0x1fbd3f7d + (i >> 1);
@@ -22,10 +23,10 @@ fn sqrt(input: f32) -> f32 {
 		num = (num + (input / num)) / 2.;
 	}
 
-	num
+	num as f64
 }
 
 #[cfg(feature = "no_std")]
-fn pow2(input: f32) -> f32 {
+fn pow2(input: f64) -> f64 {
 	input * input
 }

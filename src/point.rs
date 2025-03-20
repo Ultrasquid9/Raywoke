@@ -1,5 +1,3 @@
-use dyn_clone::DynClone;
-
 pub mod glam;
 pub mod nalgebra;
 pub mod tuple;
@@ -10,35 +8,33 @@ pub mod yakui;
 ```
 #[derive(Debug, Clone)]
 struct Vec2 {
-	x: f32,
-	y: f32
+	x: f64,
+	y: f64
 }
 
 impl Point for Vec2 {
-	fn x(&self) -> f32 {
+	fn x(&self) -> f64 {
 		self.x
 	}
-	fn y(&self) -> f32 {
+	fn y(&self) -> f64 {
 		self.y
 	}
-	fn edit(&mut self, x: f32, y: f32) {
+	fn edit(&mut self, x: f64, y: f64) {
 		self.x = x;
 		self.y = y;
 	}
 }
 ```
  */
-pub trait Point: DynClone + core::fmt::Debug + Send + Sync {
-	fn x(&self) -> f32;
-	fn y(&self) -> f32;
-	fn edit(&mut self, x: f32, y: f32);
+pub trait Point: core::fmt::Debug + Send + Sync {
+	fn x(&self) -> f64;
+	fn y(&self) -> f64;
+	fn edit(&mut self, x: f64, y: f64);
 
 	fn tup_f32(&self) -> (f32, f32) {
-		(self.x(), self.y())
+		(self.x() as f32, self.y() as f32)
 	}
 	fn tup_f64(&self) -> (f64, f64) {
-		(self.x() as f64, self.y() as f64)
+		(self.x(), self.y())
 	}
 }
-
-dyn_clone::clone_trait_object!(Point);

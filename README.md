@@ -2,10 +2,6 @@
 
 Raywoke is an extremely simple raycasting crate, forked from [raylite](https://github.com/heyimrein/raylite). It was created primarily to make the API simpler to use, and integrate more closely with third-party math libraries.
 
-In order to achieve this, Raywoke makes two compromises:
-- It now requires `dyn-clone`, meaning it is no longer dependency-free.
-- It now stores data on the heap. 
-
 ## Third-party crate interop
 
 Raywoke provides interop with the following external crates:
@@ -75,18 +71,18 @@ use raywoke::prelude::*;
 // Clone and Debug are both required
 #[derive(Debug, Clone)]
 struct Vec2 {
-	x: f32,
-	y: f32
+	x: f64,
+	y: f64
 }
 
 impl Point for Vec2 {
-	fn x(&self) -> f32 {
+	fn x(&self) -> f64 {
 		self.x
 	}
-	fn y(&self) -> f32 {
+	fn y(&self) -> f64 {
 		self.y
 	}
-	fn edit(&mut self, x: f32, y: f32) {
+	fn edit(&mut self, x: f64, y: f64) {
 		self.x = x;
 		self.y = y;
 	}
