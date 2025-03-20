@@ -21,46 +21,42 @@ raywoke = { version = "0.1", features = ["glam","nalgebra"] }
 ```rust
 use raywoke::prelude::*;
 
-fn main() {
-	// Tuples are being used here for demonstration purposes, but any type which implements the Point trait will work
-	let ray = Ray::new(
-		(0., 0.),
-		(2., 0.),
-	);
+// Tuples are being used here for demonstration purposes, but any type which implements the Point trait will work
+let ray = Ray::new(
+	(0., 0.),
+	(2., 0.),
+);
 
-	let mut bar = Barrier::new(
-		(1., -1.), 
-		(1., 1.)
-	); 
+let mut bar = Barrier::new(
+	(1., -1.),
+	(1., 1.)
+);
 
-	let result = cast(&ray, &bar); // Returns a Result<RayHit, RayFail>
+let result = cast(&ray, &bar); // Returns a Result<RayHit, RayFail>
 
-	assert!(result.is_ok()); // Result is an Ok<RayHit> containing hit info
+assert!(result.is_ok()); // Result is an Ok<RayHit> containing hit info
 
-	// Place barrier behind the Ray	
-	bar = Barrier::new(
-		(-1., -1.), 
-		(-1., 1.)
-	); 
+// Place barrier behind the Ray
+bar = Barrier::new(
+	(-1., -1.),
+	(-1., 1.)
+);
 
-	let result = cast(&ray, &bar);
-	assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
-}
+let result = cast(&ray, &bar);
+assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
 ```
 
 **Third-party crate interop**
 ```rust
-use glam::Vec2;
+use glam::DVec2;
 use nalgebra::Vector2;
 use raywoke::prelude::*;
 
-fn main() {
-	// With the "glam" and "nalgebra" features, you can use their respective Vector structs
-	let ray = Ray::new(
-		Vec2::new(0., 0.),
-		Vector2::new(0., 0.),
-	);
-}
+// With the "glam" and "nalgebra" features, you can use their respective Vector structs
+let ray = Ray::new(
+	DVec2::new(0., 0.),
+	Vector2::new(0., 0.),
+);
 ```
 
 **Creating your own Point struct**
@@ -87,10 +83,8 @@ impl Point for Vec2 {
 	}
 }
 
-fn main() {
-	let ray = Ray::new(
-		Vec2 { x: 0., y: 0. },
-		Vec2 { x: 2., y: 0. },
-	);
-}
+let ray = Ray::new(
+	Vec2 { x: 0., y: 0. },
+	Vec2 { x: 2., y: 0. },
+);
 ```

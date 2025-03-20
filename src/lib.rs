@@ -1,3 +1,4 @@
+#![allow(clippy::tabs_in_doc_comments)]
 /*!
 # Raywoke
 
@@ -22,31 +23,29 @@ raywoke = { version = "0.1", features = ["glam","nalgebra"] }
 ```rust
 use raywoke::prelude::*;
 
-fn main() {
-	// Tuples are being used here for demonstration purposes, but any type which implements the Point trait will work
-	let ray = Ray::new(
-		(0., 0.),
-		(2., 0.),
-	);
+// Tuples are being used here for demonstration purposes, but any type which implements the Point trait will work
+let ray = Ray::new(
+	(0., 0.),
+	(2., 0.),
+);
 
-	let mut bar = Barrier::new(
-		(1., -1.), 
-		(1., 1.)
-	); 
+let mut bar = Barrier::new(
+	(1., -1.),
+	(1., 1.)
+);
 
-	let result = cast(&ray, &bar); // Returns a Result<RayHit, RayFail>
+let result = cast(&ray, &bar); // Returns a Result<RayHit, RayFail>
 
-	assert!(result.is_ok()); // Result is an Ok<RayHit> containing hit info
+assert!(result.is_ok()); // Result is an Ok<RayHit> containing hit info
 
-	// Place barrier behind the Ray	
-	bar = Barrier::new(
-		(-1., -1.), 
-		(-1., 1.)
-	); 
+// Place barrier behind the Ray
+bar = Barrier::new(
+	(-1., -1.),
+	(-1., 1.)
+);
 
-	let result = cast(&ray, &bar);
-	assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
-}
+let result = cast(&ray, &bar);
+assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
 ```
 
 **Third-party crate interop**
@@ -55,13 +54,11 @@ use glam::DVec2;
 use nalgebra::Vector2;
 use raywoke::prelude::*;
 
-fn main() {
-	// With the "glam" and "nalgebra" features, you can use their respective Vector structs
-	let ray = Ray::new(
-		DVec2::new(0., 0.),
-		Vector2::new(0., 0.),
-	);
-}
+// With the "glam" and "nalgebra" features, you can use their respective Vector structs
+let ray = Ray::new(
+	DVec2::new(0., 0.),
+	Vector2::new(0., 0.),
+);
 ```
 
 **Creating your own Point struct**
@@ -88,12 +85,10 @@ impl Point for Vec2 {
 	}
 }
 
-fn main() {
-	let ray = Ray::new(
-		Vec2 { x: 0., y: 0. },
-		Vec2 { x: 2., y: 0. },
-	);
-}
+let ray = Ray::new(
+	Vec2 { x: 0., y: 0. },
+	Vec2 { x: 2., y: 0. },
+);
 ```
  */
 
@@ -104,9 +99,10 @@ extern crate alloc;
 #[cfg(feature = "no_std")]
 use alloc::boxed::Box;
 
-use point::Point;
+use prelude::*;
 use utils::distance;
 
+pub mod hit_fail;
 pub mod point;
 pub mod prelude;
 mod utils;
@@ -124,10 +120,11 @@ pub fn cast(ray: &Ray, bar: &Barrier) -> Result<RayHit, RayFail> {
 	let u_num = (ray.start.x() - bar.0.x()) * (ray.start.y() - ray.end.y())
 		- (ray.start.y() - bar.0.y()) * (ray.start.x() - ray.end.x());
 
+	let range = 0. ..=1.;
 	let t = t_num / den;
 	let u = u_num / den;
 
-	if (t >= 0. && t <= 1.) && (u >= 0. && u <= 1.) {
+	if range.contains(&t) && range.contains(&u) {
 		let mut point = ray.start;
 		point.edit(
 			ray.start.x() + t * (ray.end.x() - ray.start.x()),
@@ -135,62 +132,42 @@ pub fn cast(ray: &Ray, bar: &Barrier) -> Result<RayHit, RayFail> {
 		);
 
 		return Ok(RayHit {
-			position: point.clone(),
+			position: point,
 			distance: distance(ray.start, point),
 		});
 	}
-	return Err(RayFail::NoHit);
+	Err(RayFail::NoHit)
 }
 
 /// Cast a Ray for collision detection, with the consideration of several [Barrier]'s.
 ///
-/// `bars` must have at least 1 element.
+/// `bars` should have at least 1 element.
 ///
 /// The (possibly) returned hit information will represent the closest barrier to `ray`'s
 /// origin point that was hit.
 pub fn cast_wide(ray: &Ray, bars: &[Barrier]) -> Result<RayHit, RayFail> {
-	if bars.len() <= 0 {
-		panic!("Barrier vector cannot be empty!");
+	if bars.is_empty() {
+		return Err(RayFail::NoBars);
 	}
 
 	let mut ray_clone = ray.clone();
+	let mut result = Err(RayFail::NoHit);
 
-	let mut hit: Option<RayHit> = None;
 	for bar in bars {
 		match cast(&ray_clone, bar) {
-			Ok(v) => {
-				ray_clone.end = v.position.clone();
-				hit = Some(v);
+			Ok(hit) => {
+				ray_clone.end = hit.position;
+				result = Ok(hit);
 			}
-			Err(_) => continue,
+			Err(e) => {
+				if result.is_err() {
+					result = Err(e);
+				}
+			}
 		}
 	}
 
-	if hit.is_some() {
-		return Ok(hit.unwrap());
-	}
-
-	return Err(RayFail::NoHit);
-}
-
-/// Raycast failure states.
-pub enum RayFail {
-	/// Did not hit any colliders.
-	///
-	/// *Universal*
-	NoHit,
-	/// Ray and Barrier are parallel; cannot collide.
-	///
-	/// *Exclusive to isolated checks* -> [cast]
-	Parallel,
-}
-
-/// Raycast collision data.
-pub struct RayHit {
-	/// Position of collision point.
-	pub position: (f64, f64),
-	/// Distance of collision point from Ray emission origin.
-	pub distance: f64,
+	result
 }
 
 /// Raycast collision unit, the basis for all raycast collision detection.
