@@ -96,8 +96,6 @@ let ray = Ray::new(
 
 #[cfg(feature = "no_std")]
 extern crate alloc;
-#[cfg(feature = "no_std")]
-use alloc::boxed::Box;
 
 use prelude::*;
 use utils::distance;
