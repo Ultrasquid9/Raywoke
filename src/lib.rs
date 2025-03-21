@@ -170,7 +170,7 @@ pub fn cast_wide(ray: &Ray, bars: &[Barrier]) -> Result<RayHit, RayFail> {
 
 /// Raycast collision unit, the basis for all raycast collision detection.
 /// Determines the conditions under which collision will be detected.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Ray {
 	/// Origin position the Ray will emit from.
 	pub start: (f64, f64),
@@ -180,7 +180,7 @@ pub struct Ray {
 
 /// 1-dimensional collision subject; Solid line.
 /// Simplest building block for collider objects.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Barrier(pub (f64, f64), pub (f64, f64));
 
 impl Ray {
