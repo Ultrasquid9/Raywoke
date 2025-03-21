@@ -1,3 +1,4 @@
+pub mod cgmath;
 pub mod glam;
 pub mod nalgebra;
 pub mod ultraviolet;
