@@ -1,8 +1,8 @@
 pub mod cgmath;
 pub mod glam;
 pub mod nalgebra;
-pub mod ultraviolet;
 pub mod tuple;
+pub mod ultraviolet;
 
 /// A point that can be used for Raycasting.
 /** # Examples
@@ -41,3 +41,47 @@ pub trait Point: core::fmt::Debug + Send + Sync {
 		(self.x(), self.y())
 	}
 }
+
+// Macros to automatically implement the Point trait for a given type
+#[allow(unused)]
+macro_rules! pointify_f32 {
+	($point:ty) => {
+		impl $crate::point::Point for $point {
+			fn x(&self) -> f64 {
+				self.x as f64
+			}
+
+			fn y(&self) -> f64 {
+				self.y as f64
+			}
+
+			fn edit(&mut self, x: f64, y: f64) {
+				self.x = x as f32;
+				self.y = y as f32;
+			}
+		}
+	};
+}
+#[allow(unused)]
+macro_rules! pointify_f64 {
+	($point:ty) => {
+		impl $crate::point::Point for $point {
+			fn x(&self) -> f64 {
+				self.x
+			}
+
+			fn y(&self) -> f64 {
+				self.y
+			}
+
+			fn edit(&mut self, x: f64, y: f64) {
+				self.x = x;
+				self.y = y;
+			}
+		}
+	};
+}
+#[allow(unused)]
+pub(crate) use pointify_f32;
+#[allow(unused)]
+pub(crate) use pointify_f64;

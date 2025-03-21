@@ -7,6 +7,7 @@ Raywoke is an extremely simple raycasting crate, forked from [raylite](https://g
 ## Third-party crate interop
 
 Raywoke provides interop with the following external crates:
+- `cgmath`
 - `glam`
 - `nalgebra`
 - `ultraviolet`
