@@ -7,6 +7,7 @@ Raywoke is an extremely simple raycasting crate, forked from [raylite](https://g
 Raywoke provides interop with the following external crates:
 - `glam`
 - `nalgebra`
+- `ultraviolet`
 
 To enable this, enable their respective features in your `cargo.toml`:
 

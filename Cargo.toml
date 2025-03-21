@@ -12,8 +12,9 @@ keywords = ["gamedev", "raycast", "collision", "2d", "lightweight"]
 
 [dependencies]
 # Various optional math libraries
-glam = { version = "0.29", optional = true }
+glam = { version = "0.30", optional = true }
 nalgebra = { version = "0.33", optional = true }
+ultraviolet = { version = "0.9", optional = true, features = ["f64"]}
 
 [features]
 default = []
@@ -21,3 +22,4 @@ no_std = []
 
 glam = ["dep:glam"]
 nalgebra = ["dep:nalgebra"]
+ultraviolet = ["dep:ultraviolet"]
