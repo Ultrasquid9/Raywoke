@@ -4,6 +4,7 @@ use core::{
 };
 
 /// Raycast failure states.
+#[derive(Debug, Clone, PartialEq)]
 pub enum RayFail {
 	/// Ray and Barrier are parallel; cannot collide.
 	///
@@ -20,6 +21,7 @@ pub enum RayFail {
 }
 
 /// Raycast collision data.
+#[derive(Debug, Clone, PartialEq)]
 pub struct RayHit {
 	/// Position of collision point.
 	pub position: (f64, f64),
@@ -27,26 +29,13 @@ pub struct RayHit {
 	pub distance: f64,
 }
 
-impl RayFail {
-	fn display(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		let mut output = |str: &str| write(f, format_args!("{str}"));
-		match self {
-			RayFail::Parallel => output("Parallel"),
-			RayFail::NoHit => output("NoHit"),
-			RayFail::NoBars => output("NoBars"),
-		}
-	}
-}
-
 impl Display for RayFail {
 	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		self.display(f)
-	}
-}
-
-impl Debug for RayFail {
-	fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-		self.display(f)
+		match self {
+			RayFail::Parallel => write(f, format_args!("Parallel")),
+			RayFail::NoHit => write(f, format_args!("NoHit")),
+			RayFail::NoBars => write(f, format_args!("NoBars")),
+		}
 	}
 }
 
