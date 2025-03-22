@@ -2,13 +2,13 @@
 name = "raywoke"
 description = "Extremely simple raycasting crate"
 authors = ["heyimrein", "juni"]
-version = "0.2.0"
+version = "0.2.1"
 edition = "2024"
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/Ultrasquid9/Raywoke"
-categories = [ "game-development", "mathematics", ]
-keywords = ["gamedev", "raycast", "collision", "2d", "lightweight"]
+categories = [ "game-development", "mathematics", "no-std" ]
+keywords = [ "gamedev", "raycast", "collision", "2d", "lightweight" ]
 
 [dependencies]
 # Various optional math libraries
