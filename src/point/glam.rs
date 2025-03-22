@@ -1,4 +1,4 @@
 #![cfg(feature = "glam")]
 
-super::pointify_f32! { glam::Vec2 }
-super::pointify_f64! { glam::DVec2 }
+super::point! { glam::Vec2, f32 }
+super::point! { glam::DVec2, f64 }

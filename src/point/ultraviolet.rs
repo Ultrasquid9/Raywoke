@@ -1,4 +1,4 @@
 #![cfg(feature = "ultraviolet")]
 
-super::pointify_f32! { ultraviolet::Vec2 }
-super::pointify_f64! { ultraviolet::DVec2 }
+super::point! { ultraviolet::Vec2, f32 }
+super::point! { ultraviolet::DVec2, f64 }

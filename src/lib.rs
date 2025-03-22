@@ -69,25 +69,14 @@ let ray = Ray::new(
 ```rust
 use raywoke::prelude::*;
 
-// Clone and Debug are both required
-#[derive(Debug, Clone)]
 struct Vec2 {
 	x: f64,
 	y: f64
 }
 
-impl Point for Vec2 {
-	fn x(&self) -> f64 {
-		self.x
-	}
-	fn y(&self) -> f64 {
-		self.y
-	}
-	fn edit(&mut self, x: f64, y: f64) {
-		self.x = x;
-		self.y = y;
-	}
-}
+// The "point!" macro derives the trait automatically
+// You can also implement it manually
+point! { Vec2, f64 }
 
 let ray = Ray::new(
 	Vec2 { x: 0., y: 0. },

@@ -31,7 +31,7 @@ impl Point for Vec2 {
 }
 ```
  */
-pub trait Point: core::fmt::Debug + Send + Sync {
+pub trait Point: Send + Sync {
 	fn x(&self) -> f64;
 	fn y(&self) -> f64;
 	fn edit(&mut self, x: f64, y: f64);
@@ -44,46 +44,46 @@ pub trait Point: core::fmt::Debug + Send + Sync {
 	}
 }
 
-// Macros to automatically implement the Point trait for a given type
-#[allow(unused)]
-macro_rules! pointify_f32 {
-	($point:ty) => {
+/// Implements the point trait on the given type.
+/** # Examples
+```
+// If the struct has an "x" and a "y" field,
+// then they will be used automatically 
+struct Vec2 {
+	x: f64,
+	y: f64,
+}
+point! { Vec2, f64, }
+
+// If the struct lacks "x" and "y" fields, 
+// then the intended fields should be specified 
+struct Position {
+	pos_x: f32,
+	pos_y: f32,
+}
+point! { Position, f32, pos_x, pos_y}
+```
+ */
+#[macro_export]
+macro_rules! point {
+	($point:ty, $type:ty, $x:tt, $y:tt) => {
 		impl $crate::point::Point for $point {
 			fn x(&self) -> f64 {
-				self.x as f64
+				self.$x as f64
 			}
 
 			fn y(&self) -> f64 {
-				self.y as f64
+				self.$y as f64
 			}
 
 			fn edit(&mut self, x: f64, y: f64) {
-				self.x = x as f32;
-				self.y = y as f32;
+				self.$x = x as $type;
+				self.$y = y as $type;
 			}
-		}
+		}	
+	};
+	($point:ty, $type:ty) => {
+		$crate::point::point!{ $point, $type, x, y }
 	};
 }
-#[allow(unused)]
-macro_rules! pointify_f64 {
-	($point:ty) => {
-		impl $crate::point::Point for $point {
-			fn x(&self) -> f64 {
-				self.x
-			}
-
-			fn y(&self) -> f64 {
-				self.y
-			}
-
-			fn edit(&mut self, x: f64, y: f64) {
-				self.x = x;
-				self.y = y;
-			}
-		}
-	};
-}
-#[allow(unused)]
-pub(crate) use pointify_f32;
-#[allow(unused)]
-pub(crate) use pointify_f64;
+pub use point;
