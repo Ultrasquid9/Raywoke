@@ -45,23 +45,31 @@ pub trait Point: Send + Sync {
 }
 
 /// Implements the point trait on the given type.
+///
+/// Accepts the type for the trait to be implemented on, and the type of the "x" and "y" fields.
+/// If the struct lacks an "x" or a "y" field, those should also be specified.
+///
+/// For more complex scenarios (for example, x and y having different types),
+/// then the trait should instead be implemented manually.
 /** # Examples
 ```
+use raywoke::prelude::*;
+
 // If the struct has an "x" and a "y" field,
-// then they will be used automatically 
+// then they will be used automatically
 struct Vec2 {
 	x: f64,
 	y: f64,
 }
-point! { Vec2, f64, }
+point! { Vec2, f64 }
 
-// If the struct lacks "x" and "y" fields, 
-// then the intended fields should be specified 
+// If the struct lacks an "x" or a "y" field,
+// then the intended fields should be specified
 struct Position {
 	pos_x: f32,
 	pos_y: f32,
 }
-point! { Position, f32, pos_x, pos_y}
+point! { Position, f32, pos_x, pos_y }
 ```
  */
 #[macro_export]
@@ -80,10 +88,10 @@ macro_rules! point {
 				self.$x = x as $type;
 				self.$y = y as $type;
 			}
-		}	
+		}
 	};
 	($point:ty, $type:ty) => {
-		$crate::point::point!{ $point, $type, x, y }
+		$crate::point::point! { $point, $type, x, y }
 	};
 }
 pub use point;

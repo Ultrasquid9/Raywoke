@@ -18,7 +18,7 @@ To enable this, enable their respective features in your `cargo.toml`:
 
 ```toml
 [dependencies]
-raywoke = { version = "0.1", features = ["glam","nalgebra"] }
+raywoke = { version = "0.2", features = ["glam","nalgebra"] }
 ```
 
 ## Examples
@@ -54,6 +54,20 @@ assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
 
 **Third-party crate interop**
 ```rust
+# // Hacky way to prevent doctests from failing
+# mod glam {
+# 	use raywoke::prelude::*;
+# 	pub struct DVec2{x:f32,y:f32}
+# 	impl DVec2 {pub fn new(x:f32,y:f32)->Self{Self{x,y}}}
+# 	point!{DVec2,f32}
+# }
+# mod nalgebra {
+# 	use raywoke::prelude::*;
+# 	pub struct Vector2{x:f32,y:f32}
+# 	impl Vector2 {pub fn new(x:f32,y:f32)->Self{Self{x,y}}}
+# 	point!{Vector2,f32}
+# }
+
 use glam::DVec2;
 use nalgebra::Vector2;
 use raywoke::prelude::*;
@@ -75,7 +89,7 @@ struct Vec2 {
 }
 
 // The "point!" macro derives the trait automatically
-// You can also implement it manually
+// You can also implement it manually, if needed
 point! { Vec2, f64 }
 
 let ray = Ray::new(
