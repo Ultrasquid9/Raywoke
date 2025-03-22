@@ -13,7 +13,9 @@ keywords = ["gamedev", "raycast", "collision", "2d", "lightweight"]
 [dependencies]
 # Various optional math libraries
 cgmath = { version = "0.18", optional = true }
+euclid = { version = "0.22", optional = true }
 glam = { version = "0.30", optional = true }
+mint = { version = "0.5", optional = true }
 nalgebra = { version = "0.33", optional = true }
 ultraviolet = { version = "0.9", optional = true, features = ["f64"]}
 
@@ -22,6 +24,8 @@ default = []
 no_std = []
 
 cgmath = ["dep:cgmath"]
+euclid = ["dep:euclid"]
 glam = ["dep:glam"]
+mint = ["dep:mint"]
 nalgebra = ["dep:nalgebra"]
 ultraviolet = ["dep:ultraviolet"]

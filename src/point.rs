@@ -1,5 +1,7 @@
 pub mod cgmath;
+pub mod euclid;
 pub mod glam;
+pub mod mint;
 pub mod nalgebra;
 pub mod tuple;
 pub mod ultraviolet;
