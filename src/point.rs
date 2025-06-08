@@ -24,17 +24,12 @@ impl Point for Vec2 {
 	fn y(&self) -> f64 {
 		self.y
 	}
-	fn edit(&mut self, x: f64, y: f64) {
-		self.x = x;
-		self.y = y;
-	}
 }
 ```
  */
 pub trait Point: Send + Sync {
 	fn x(&self) -> f64;
 	fn y(&self) -> f64;
-	fn edit(&mut self, x: f64, y: f64);
 
 	fn tup_f32(&self) -> (f32, f32) {
 		(self.x() as f32, self.y() as f32)
@@ -82,11 +77,6 @@ macro_rules! point {
 
 			fn y(&self) -> f64 {
 				self.$y as f64
-			}
-
-			fn edit(&mut self, x: f64, y: f64) {
-				self.$x = x as $type;
-				self.$y = y as $type;
 			}
 		}
 	};

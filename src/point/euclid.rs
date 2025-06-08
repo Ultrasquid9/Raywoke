@@ -11,11 +11,6 @@ macro_rules! euclid_pointify {
 			fn y(&self) -> f64 {
 				self.y as f64
 			}
-
-			fn edit(&mut self, x: f64, y: f64) {
-				self.x = x as $num;
-				self.y = y as $num;
-			}
 		}
 	};
 }

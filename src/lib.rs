@@ -127,8 +127,7 @@ pub fn cast(ray: &Ray, bar: &Barrier) -> Result<RayHit, RayFail> {
 	let u = u_num / den;
 
 	if range.contains(&t) && range.contains(&u) {
-		let mut point = ray.start;
-		point.edit(
+		let point = (
 			ray.start.x() + t * (ray.end.x() - ray.start.x()),
 			ray.start.y() + t * (ray.end.y() - ray.start.y()),
 		);
