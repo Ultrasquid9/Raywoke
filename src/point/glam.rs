@@ -1,4 +1,7 @@
 #![cfg(feature = "glam")]
 
-super::point! { glam::Vec2 }
-super::point! { glam::DVec2 }
+use crate::prelude::*;
+use glam::*;
+
+point! { Vec2, |x, y| Vec2::new(x as f32, y as f32)}
+point! { DVec2, DVec2::new}

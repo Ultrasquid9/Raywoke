@@ -7,78 +7,114 @@ pub mod tuple;
 pub mod ultraviolet;
 
 /// A point that can be used for Raycasting.
-/** # Examples
-```
-use raywoke::prelude::*;
-
-#[derive(Debug, Clone)]
-struct Vec2 {
-	x: f64,
-	y: f64
-}
-
-impl Point for Vec2 {
-	fn x(&self) -> f64 {
-		self.x
-	}
-	fn y(&self) -> f64 {
-		self.y
-	}
-}
-```
- */
+/// # Examples
+///```
+/// use raywoke::prelude::*;
+/// 
+/// #[derive(Debug, Clone)]
+/// struct Vec2 {
+/// 	x: f64,
+/// 	y: f64
+/// }
+/// 
+/// impl Point for Vec2 {
+/// 	fn x(&self) -> f64 {
+/// 		self.x
+/// 	}
+/// 
+/// 	fn y(&self) -> f64 {
+/// 		self.y
+/// 	}
+/// 
+/// 	fn from_point(other: &impl Point) -> Self {
+/// 		Self {
+/// 			x: other.x(), 
+/// 			y: other.y(),
+/// 		}
+/// 	}
+/// }
+///```
 pub trait Point: Send + Sync {
 	fn x(&self) -> f64;
 	fn y(&self) -> f64;
 
-	fn tup_f32(&self) -> (f32, f32) {
-		(self.x() as f32, self.y() as f32)
+	fn from_point(other: &impl Point) -> Self;
+
+	fn to_point<P: Point>(&self) -> P 
+	where 
+		Self: Sized
+	{
+		P::from_point(self)
 	}
-	fn tup_f64(&self) -> (f64, f64) {
-		(self.x(), self.y())
-	}
 }
 
-/// Implements the point trait on the given type.
-///
-/// For more complex scenarios (for example, x or y not implementing `Into<f64>`),
-/// then the trait can instead be implemented manually.
-/** # Examples
-```
-use raywoke::prelude::*;
+/// Specify the `x` and `y` fields of a [Point].
+/// 
+/// For more complex scenarios (for example, `x` or `y` not implementing `Into<f64>`),
+/// then they can instead be specified manually.
+/// # Examples
+/// ```
+/// use raywoke::prelude::*;
+/// 
+/// struct Vec2 {
+/// 	x: f64,
+/// 	y: f64,
+/// }
+/// 
+/// impl Point for Vec2 {
+/// 	xy! { x, y }
+/// 
+/// 	# fn from_point(other: &impl Point) -> Self { stringify!(
+/// 	fn from_point(other: &impl Point) -> Self {...}
+/// 	# );Self{x:other.x(),y:other.y()}}
+/// }
+/// ```
+#[macro_export]
+macro_rules! xy {
+	($x:tt, $y:tt) => {
+		fn x(&self) -> f64 {
+			self.$x.into()
+		}
 
-// If the struct has an "x" and a "y" field,
-// then they will be used automatically
-struct Vec2 {
-	x: f64,
-	y: f64,
+		fn y(&self) -> f64 {
+			self.$y.into()
+		}
+	};
 }
-point! { Vec2 }
 
-// If the struct lacks an "x" or a "y" field,
-// then the intended fields should be specified
-struct Position {
-	pos_x: f32,
-	pos_y: f32,
-}
-point! { Position, pos_x, pos_y }
-```
- */
+/// Implement the [Point] trait on a given type.
+/// 
+/// If the type does not have fields named `x` or `y`, you should
+/// implement the trait manually and use the [xy] macro instead.
+/// # Examples
+/// ```
+/// use raywoke::prelude::*;
+/// 
+/// struct Vec2 {
+/// 	x: f64,
+/// 	y: f64,
+/// }
+/// 
+/// impl Vec2 {
+/// 	# pub fn new(x:f64,y:f64)->Self{stringify!(
+/// 	pub fn new(x: f64, y: f64) -> Self {...}
+/// 	# );Self{x,y}}
+/// }
+/// 
+/// point! { Vec2, Vec2::new }
+/// ```
 #[macro_export]
 macro_rules! point {
-	($point:ty, $x:tt, $y:tt) => {
+	($point:ty, $constructor:expr) => {
 		impl $crate::point::Point for $point {
-			fn x(&self) -> f64 {
-				self.$x.into()
-			}
+			$crate::point::xy!{ x, y }
 
-			fn y(&self) -> f64 {
-				self.$y.into()
+			fn from_point(other: &impl Point) -> Self {
+				$constructor(other.x(), other.y())
 			}
 		}
 	};
-	($point:ty) => {
-		$crate::point::point! { $point, x, y }
-	};
 }
+
+pub use xy;
 pub use point;

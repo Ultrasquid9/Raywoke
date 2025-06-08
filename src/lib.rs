@@ -1,103 +1,107 @@
 #![allow(clippy::tabs_in_doc_comments)]
-/*!
-# Raywoke
-
-Raywoke is an extremely simple raycasting crate, forked from [raylite](https://github.com/heyimrein/raylite). It was created primarily to make the API simpler to use, and integrate more closely with third-party math libraries.
-
-## Third-party crate interop
-
-Raywoke provides interop with the following external crates:
-- `cgmath`
-- `euclid`
-- `glam`
-- `mint`
-- `nalgebra`
-- `ultraviolet`
-
-To enable this, enable their respective features in your `cargo.toml`:
-
-```toml
-[dependencies]
-raywoke = { version = "0.2", features = ["glam","nalgebra"] }
-```
-
-## Examples
-
-**Using the library**
-```rust
-use raywoke::prelude::*;
-
-// Tuples are being used here for demonstration purposes, but any type which implements the Point trait will work
-let ray = Ray::new(
-	(0., 0.),
-	(2., 0.),
-);
-
-let mut bar = Barrier::new(
-	(1., -1.),
-	(1., 1.)
-);
-
-let result = cast(&ray, &bar); // Returns a Result<RayHit, RayFail>
-
-assert!(result.is_ok()); // Result is an Ok<RayHit> containing hit info
-
-// Place barrier behind the Ray
-bar = Barrier::new(
-	(-1., -1.),
-	(-1., 1.)
-);
-
-let result = cast(&ray, &bar);
-assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
-```
-
-**Third-party crate interop**
-```rust
-# // Hacky way to prevent doctests from failing
-# mod glam {
-# 	use raywoke::prelude::*;
-# 	pub struct DVec2{x:f32,y:f32}
-# 	impl DVec2 {pub fn new(x:f32,y:f32)->Self{Self{x,y}}}
-# 	point!{DVec2,f32}
-# }
-# mod nalgebra {
-# 	use raywoke::prelude::*;
-# 	pub struct Vector2{x:f32,y:f32}
-# 	impl Vector2 {pub fn new(x:f32,y:f32)->Self{Self{x,y}}}
-# 	point!{Vector2,f32}
-# }
-
-use glam::DVec2;
-use nalgebra::Vector2;
-use raywoke::prelude::*;
-
-// With the "glam" and "nalgebra" features, you can use their respective Vector structs
-let ray = Ray::new(
-	DVec2::new(0., 0.),
-	Vector2::new(0., 0.),
-);
-```
-
-**Creating your own Point struct**
-```rust
-use raywoke::prelude::*;
-
-struct Vec2 {
-	x: f64,
-	y: f64
-}
-
-// The "point!" macro derives the trait automatically
-// You can also implement it manually, if needed
-point! { Vec2 }
-
-let ray = Ray::new(
-	Vec2 { x: 0., y: 0. },
-	Vec2 { x: 2., y: 0. },
-);
-```
- */
+//! # Raywoke
+//! 
+//! Raywoke is an extremely simple raycasting crate, forked from [raylite](https://github.com/heyimrein/raylite). It was created primarily to make the API simpler to use, and integrate more closely with third-party math libraries.
+//! 
+//! ## Third-party crate interop
+//! 
+//! Raywoke provides interop with the following external crates:
+//! - `cgmath`
+//! - `euclid`
+//! - `glam`
+//! - `mint`
+//! - `nalgebra`
+//! - `ultraviolet`
+//! 
+//! To enable this, enable their respective features in your `cargo.toml`:
+//! 
+//! ```toml
+//! [dependencies]
+//! raywoke = { version = "0.2", features = ["glam","nalgebra"] }
+//! ```
+//! 
+//! ## Examples
+//! 
+//! **Using the library**
+//! ```rust
+//! use raywoke::prelude::*;
+//! 
+//! // Tuples are being used here for demonstration purposes, but any type which implements the Point trait will work
+//! let ray = Ray::new(
+//! 	(0., 0.),
+//! 	(2., 0.),
+//! );
+//! 
+//! let mut bar = Barrier::new(
+//! 	(1., -1.),
+//! 	(1., 1.)
+//! );
+//! 
+//! let result = cast(&ray, &bar); // Returns a Result<RayHit, RayFail>
+//! 
+//! assert!(result.is_ok()); // Result is an Ok<RayHit> containing hit info
+//! 
+//! // Place barrier behind the Ray
+//! bar = Barrier::new(
+//! 	(-1., -1.),
+//! 	(-1., 1.)
+//! );
+//! 
+//! let result = cast(&ray, &bar);
+//! assert!(result.is_err()); // Result is an Err<RayFail::NoHit>
+//! ```
+//! 
+//! **Third-party crate interop**
+//! ```rust
+//! # // Hacky way to prevent doctests from failing
+//! # mod glam {
+//! # 	use raywoke::prelude::*;
+//! # 	pub struct DVec2{x:f64,y:f64}
+//! # 	impl DVec2 {pub fn new(x:f64,y:f64)->Self{Self{x,y}}}
+//! # 	point!{DVec2,DVec2::new}
+//! # }
+//! # mod nalgebra {
+//! # 	use raywoke::prelude::*;
+//! # 	pub struct Vector2{x:f64,y:f64}
+//! # 	impl Vector2 {pub fn new(x:f64,y:f64)->Self{Self{x,y}}}
+//! # 	point!{Vector2,Vector2::new}
+//! # }
+//! 
+//! use glam::DVec2;
+//! use nalgebra::Vector2;
+//! use raywoke::prelude::*;
+//! 
+//! // With the "glam" and "nalgebra" features, you can use their respective Vector structs
+//! let ray = Ray::new(
+//! 	DVec2::new(0., 0.),
+//! 	Vector2::new(0., 0.),
+//! );
+//! ```
+//! 
+//! **Creating your own Point struct**
+//! ```rust
+//! use raywoke::prelude::*;
+//! 
+//! struct Vec2 {
+//! 	x: f64,
+//! 	y: f64
+//! }
+//! 
+//! impl Vec2 {
+//! 	# pub fn new(x:f64,y:f64)->Self{stringify!(
+//! 	pub fn new(x: f64, y: f64) -> Self {...}
+//! 	# );Self{x,y}}
+//! }
+//! 
+//! // The "point!" macro derives the trait automatically
+//! // You can also implement it manually, if needed
+//! point! { Vec2, Vec2::new }
+//! 
+//! let ray = Ray::new(
+//! 	Vec2::new(0., 0.),
+//! 	Vec2::new(2., 0.),
+//! );
+//! ```
 
 #![cfg_attr(feature = "no_std", no_std)]
 
@@ -189,14 +193,14 @@ pub struct Barrier(pub (f64, f64), pub (f64, f64));
 impl Ray {
 	pub fn new(start: impl Point, end: impl Point) -> Self {
 		Self {
-			start: start.tup_f64(),
-			end: end.tup_f64(),
+			start: start.to_point(),
+			end: end.to_point(),
 		}
 	}
 }
 
 impl Barrier {
 	pub fn new(start: impl Point, end: impl Point) -> Self {
-		Self(start.tup_f64(), end.tup_f64())
+		Self(start.to_point(), end.to_point())
 	}
 }

@@ -72,12 +72,16 @@ struct Vec2 {
 	y: f64
 }
 
+impl Vec2 {
+	pub fn new(x: f64, y: f64) -> Self {...}
+}
+
 // The "point!" macro derives the trait automatically
-// You can also implement it manually
-point! { Vec2, f64 }
+// You can also implement it manually, if needed
+point! { Vec2, Vec2::new }
 
 let ray = Ray::new(
-	Vec2 { x: 0., y: 0. },
-	Vec2 { x: 2., y: 0. },
+	Vec2::new(0., 0.),
+	Vec2::new(2., 0.),
 );
 ```

@@ -11,6 +11,10 @@ macro_rules! euclid_pointify {
 			fn y(&self) -> f64 {
 				self.y as f64
 			}
+
+			fn from_point(other: &impl $crate::point::Point) -> Self {
+				Self::new(other.x() as $num, other.y() as $num)
+			}
 		}
 	};
 }
