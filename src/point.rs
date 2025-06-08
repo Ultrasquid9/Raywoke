@@ -41,11 +41,8 @@ pub trait Point: Send + Sync {
 
 /// Implements the point trait on the given type.
 ///
-/// Accepts the type for the trait to be implemented on, and the type of the "x" and "y" fields.
-/// If the struct lacks an "x" or a "y" field, those should also be specified.
-///
-/// For more complex scenarios (for example, x and y having different types),
-/// then the trait should instead be implemented manually.
+/// For more complex scenarios (for example, x or y not implementing `Into<f64>`),
+/// then the trait can instead be implemented manually.
 /** # Examples
 ```
 use raywoke::prelude::*;
@@ -56,7 +53,7 @@ struct Vec2 {
 	x: f64,
 	y: f64,
 }
-point! { Vec2, f64 }
+point! { Vec2 }
 
 // If the struct lacks an "x" or a "y" field,
 // then the intended fields should be specified
@@ -64,24 +61,24 @@ struct Position {
 	pos_x: f32,
 	pos_y: f32,
 }
-point! { Position, f32, pos_x, pos_y }
+point! { Position, pos_x, pos_y }
 ```
  */
 #[macro_export]
 macro_rules! point {
-	($point:ty, $type:ty, $x:tt, $y:tt) => {
+	($point:ty, $x:tt, $y:tt) => {
 		impl $crate::point::Point for $point {
 			fn x(&self) -> f64 {
-				self.$x as f64
+				self.$x.into()
 			}
 
 			fn y(&self) -> f64 {
-				self.$y as f64
+				self.$y.into()
 			}
 		}
 	};
-	($point:ty, $type:ty) => {
-		$crate::point::point! { $point, $type, x, y }
+	($point:ty) => {
+		$crate::point::point! { $point, x, y }
 	};
 }
 pub use point;

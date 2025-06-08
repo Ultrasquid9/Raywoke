@@ -90,7 +90,7 @@ struct Vec2 {
 
 // The "point!" macro derives the trait automatically
 // You can also implement it manually, if needed
-point! { Vec2, f64 }
+point! { Vec2 }
 
 let ray = Ray::new(
 	Vec2 { x: 0., y: 0. },
