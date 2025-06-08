@@ -13,11 +13,11 @@ pub fn distance(p1: impl Point, p2: impl Point) -> f64 {
 
 #[cfg(feature = "no_std")]
 mod no_std {
-	/// fast sqrt magic number, taken from [this blogpost](https://suraj.sh/fast-square-root-approximation).
-	const MAGIC: u32 = 0x1FBD3F7D;
+	/// fast inverse square root constant.
+	const MAGIC: u64 = 0x5FE6EB50C7B537A9;
 
 	/// Calculates the square root. uses x86-specific methods when possible, otherwise 
-	/// falls back to [fast square root](en.wikipedia.org/wiki/Fast_inverse_square_root).
+	/// falls back to [fast inverse square root](en.wikipedia.org/wiki/Fast_inverse_square_root).
 	pub fn sqrt(input: f64) -> f64 {
 		#[cfg(all(
 			any(target_arch = "x86", target_arch = "x86_64"),
@@ -32,13 +32,12 @@ mod no_std {
 		return sqrt_magic(input);
 	}
 
-	/// Calculates the square root using the fast inverse sqrt method.
+	/// Calculates the square root using the 
+	/// [fast inverse square root](https://en.wikipedia.org/wiki/Fast_inverse_square_root).
 	#[allow(unused)]
 	fn sqrt_magic(input: f64) -> f64 {
-		let input = input as f32;
-
-		let num = MAGIC + (input.to_bits() >> 1);
-		let mut num = f32::from_bits(num);
+		let num = MAGIC - (input.to_bits() >> 1);
+		let mut num = 1. / f64::from_bits(num);
 
 		num = (num + (input / num)) / 2.;
 		num = (num + (input / num)) / 2.;
@@ -73,10 +72,12 @@ mod no_std {
 	#[test]
 	fn simple() {
 		assert_eq!(4., sqrt(16.));
+		assert_eq!(4., sqrt_magic(16.).round());
 	}
 
 	#[test]
 	fn less_simple() {
 		assert_eq!(346., (sqrt(12.) * 100.).round());
+		assert_eq!(346., (sqrt_magic(12.) * 100.).round());
 	}
 }
